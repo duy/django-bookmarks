@@ -3,12 +3,14 @@ from django.conf.urls.defaults import *
 # for voting
 from voting.views import vote_on_object
 from bookmarks.models import Bookmark
+from bookmarks.forms import BookmarkInstanceForm, BookmarkInstanceEditForm
 
 urlpatterns = patterns('',
     url(r'^$', 'bookmarks.views.bookmarks', name="all_bookmarks"),
     url(r'^your_bookmarks/$', 'bookmarks.views.your_bookmarks', name="your_bookmarks"),
     url(r'^add/$', 'bookmarks.views.add', name="add_bookmark"),
     url(r'^(\d+)/delete/$', 'bookmarks.views.delete', name="delete_bookmark_instance"),
+    url(r'^(\d+)/edit/$', 'bookmarks.views.edit', name="edit_bookmark_instance"),    
     
     # for voting
     (r'^(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$',
@@ -17,4 +19,25 @@ urlpatterns = patterns('',
             template_object_name='bookmark',
             template_name='kb/link_confirm_vote.html',
             allow_xmlhttprequest=True)),
+
+    # ajax validation
+    (r'^validate_add/$', 'ajax_validation.views.validate', 
+        {'form_class': BookmarkInstanceForm, 
+        'callback': lambda request, 
+        *args, 
+        **kwargs: {'user': request.user}}, 
+        'bookmark_instance_form_validate'),
+        
+    # ajax validation
+    (r'^validate_edit/$', 'ajax_validation.views.validate', 
+        {'form_class': BookmarkInstanceEditForm, 
+        'callback': lambda request, 
+        *args, 
+        **kwargs: {'user': request.user}}, 
+        'bookmark_instance_edit_form_validate'),        
+            
+            
 )
+
+
+
