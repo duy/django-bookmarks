@@ -24,7 +24,6 @@ from tagging.fields import TagField
 from tagging.models import Tag
 
 from django.conf import settings
-BOOKMARK_VERIFY_EXISTS = settings.BOOKMARK_VERIFY_EXISTS
 BOOKMARK_VERIFY_EXISTS = getattr(settings, "BOOKMARK_VERIFY_EXISTS", False)
 
 
