@@ -64,6 +64,9 @@ class Bookmark(models.Model):
     
     def __unicode__(self):
         return self.url
+        
+    def get_absolute_url(self):
+        return "/bookmarks/%i/" % self.id
     
     class Meta:
         ordering = ('-added', )
@@ -82,11 +85,18 @@ class BookmarkInstance(models.Model):
     
     def save(self, force_insert=False, force_update=False,edit=False):
         if edit:
-            super(BookmarkInstance, self).save(force_insert, True)            
+            super(BookmarkInstance, self).save(force_insert, True)        
+            # when editing, change bookmark description  property
+            bookmark = self.bookmark
+            bookmark.description = self.description
+            print bookmark.description
+            bookmark.save()
         else:
             # new bookmark/bookmark instance so add the new bookmark
             try:
                 bookmark = Bookmark.objects.get(url=self.url)
+                # when editing, change bookmark description  property
+                bookmark.description = self.description
             except Bookmark.DoesNotExist:
                 # has_favicon=False is temporary as the view for adding bookmarks will change it
                 bookmark = Bookmark(url=self.url, description=self.description, note=self.note, has_favicon=False, adder=self.user)

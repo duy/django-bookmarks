@@ -1,1 +1,14 @@
 *.pyc
+*.pyo
+.tmp*
+.svn
+secret.txt
+settings_local.py
+dev*.db
+build
+*.tar.gz
+*.bak
+*.old
+*~
+*.egg
+django_bookmarks.egg-info/*

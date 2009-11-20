@@ -12,14 +12,6 @@ urlpatterns = patterns('',
     url(r'^(\d+)/delete/$', 'bookmarks.views.delete', name="delete_bookmark_instance"),
     url(r'^(\d+)/edit/$', 'bookmarks.views.edit', name="edit_bookmark_instance"),    
     
-    # for json
-    url(r'^json/(?P<model_name>[\d\w]+)/$', 'bookmarks.serializers.bookmarks_json'),
-    url(r'^json/(?P<model_name>[\d\w]+)/(?P<object_id>\d+)/$', 'bookmarks.serializers.bookmarks_json'),
-#    (r'^json/', include('json.urls')),
-    # for xml
-    url(r'^xml/(?P<model_name>[\d\w]+)/$', 'bookmarks.serializers.bookmarks_xml'),
-    url(r'^xml/(?P<model_name>[\d\w]+)/(?P<object_id>\d+)/$', 'bookmarks.serializers.bookmarks_xml'),
-
     # for voting
     (r'^(?P<object_id>\d+)/(?P<direction>up|down|clear)vote/?$',
         vote_on_object, dict(
@@ -48,4 +40,65 @@ urlpatterns = patterns('',
 )
 
 
+# for restapi
+from django_restapi.model_resource import Collection
+from django_restapi.responder import XMLResponder, JSONResponder
+from django_restapi.receiver import XMLReceiver, JSONReceiver
 
+xml_bookmarks_resource = Collection(
+    queryset = Bookmark.objects.all(),
+    permitted_methods = ('GET', 'POST', 'PUT', 'DELETE'),
+    receiver = XMLReceiver(),
+    responder = XMLResponder(paginate_by = 10)
+)
+
+json_bookmarks_resource = Collection(
+    queryset = Bookmark.objects.all(),
+    permitted_methods = ('GET', 'POST', 'PUT', 'DELETE'),
+    responder = JSONResponder(paginate_by=10)
+)
+from bookmarks.models import BookmarkInstance
+
+xml_bookmarkinstances_resource = Collection(
+    queryset = BookmarkInstance.objects.all(),
+    permitted_methods = ('GET', 'POST', 'PUT', 'DELETE'),
+    receiver = XMLReceiver(),
+    responder = XMLResponder(paginate_by = 10)
+)
+
+json_bookmarkinstances_resource = Collection(
+    queryset = BookmarkInstance.objects.all(),
+    permitted_methods = ('GET', 'POST', 'PUT', 'DELETE'),
+    responder = JSONResponder(paginate_by=10)
+)
+
+from bookmarks.feeds import BookmarkFeed, RSS1BookmarkFeed, AtomBookmarkFeed, RDFBookmarkFeed
+feeds_dict = {
+    'rss':  BookmarkFeed,
+    'rss1': RSS1BookmarkFeed,
+    'atom': AtomBookmarkFeed,
+    'rdf': RDFBookmarkFeed,
+}
+bookmarks_feed_dict = {"feed_dict": feeds_dict}
+
+urlpatterns += patterns('',
+
+# duy
+#    (r'^feeds/bookmarks/(.*)/?$', 'django.contrib.syndication.views.feed', bookmarks_feed_dict),
+    (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', bookmarks_feed_dict),
+    # url(r'^feeds/(?P<feedtype>\w+)/$', views.bookmark_feed, name='bookmark_feed'),
+
+    # for json
+    (r'^api/json/(?P<model_name>[\d\w]+)/$', 'bookmarks.serializers.bookmarks_json'),
+    (r'^api/json/(?P<model_name>[\d\w]+)/(?P<object_id>\d+)/$', 'bookmarks.serializers.bookmarks_json'),
+#    (r'^json/', include('json.urls')),
+    # for xml
+    (r'^api/xml/(?P<model_name>[\d\w]+)/$', 'bookmarks.serializers.bookmarks_xml'),
+    (r'^api/xml/(?P<model_name>[\d\w]+)/(?P<object_id>\d+)/$', 'bookmarks.serializers.bookmarks_xml'),
+    # for restapi
+    (r'^api/rest/xml/bookmark/(.*?)/?$', xml_bookmarks_resource),
+    (r'^api/rest/json/bookmark/(.*?)/?$', json_bookmarks_resource),
+    (r'^api/rest/xml/bookmarkinstance/(.*?)/?$', xml_bookmarkinstances_resource),
+    (r'^api/rest/json/bookmarkinstance/(.*?)/?$', json_bookmarkinstances_resource),
+        
+)

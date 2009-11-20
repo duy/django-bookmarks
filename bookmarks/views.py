@@ -140,4 +140,31 @@ def edit(request, bookmark_instance_id):
         "bookmarklet": bookmarklet,
         "bookmark_form": bookmark_form,
     }, context_instance=RequestContext(request))        
-            
+
+
+#@login_required
+#def bookmark_feed(request, feedtype,
+#                 group_slug=None, bridge=None,
+#                 bookmark_qs=ALL_BOOKMARKS,
+#                 extra_context=None,
+#                 is_member=None,
+#                 is_private=None,
+#                 *args, **kw):
+
+#    feeds = {'rss' : RssBookmarkFeed,
+#             'atom' : AtomBookmarkFeed}
+#    BookmarkFeed = feeds.get(feedtype, RssBookmarkFeed)
+
+#    try:
+#        feedgen = BookmarkFeed(request,
+#                              group_slug, bridge,
+#                              bookmark_qs, changes_qs,
+#                              extra_context,
+#                              *args, **kw).get_feed()
+#    except FeedDoesNotExist:
+#        raise Http404
+
+#    response = HttpResponse(mimetype=feedgen.mime_type)
+#    feedgen.write(response, 'utf-8')
+#    return response
+
