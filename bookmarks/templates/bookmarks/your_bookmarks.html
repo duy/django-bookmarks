@@ -38,6 +38,17 @@
                         {%endcomment%}
                         <a href="{% url edit_bookmark_instance bookmark_instance.id %}">{% trans "Edit Bookmark" %}</a>
                         <a href="{% url delete_bookmark_instance bookmark_instance.id %}">{% trans "Delete Bookmark" %}</a>
+                        <div class="export">
+                            {% trans "Export formats:" %}
+                            <a href="/bookmarks/feeds/rss/bookmark/{{bookmark_instance.id}}">RSS 2.0</a>
+                            <a href="/bookmarks/feeds/atom/bookmark/{{bookmark_instance.id}}">Atom</a> 
+                            <a href="/bookmarks/feeds/rss1/bookmark/{{bookmark_instance.id}}">RSS 0.91</a> 
+                            <a href="/bookmarks/feeds/rdf/bookmark/{{bookmark_instance.id}}">RSS 1.0/RDF</a> 
+                            <a href="/bookmarks/api/json/bookmarkinstance/{{bookmark_instance.id}}">JSON model</a> 
+                            <a href="/bookmarks/api/xml/bookmarkinstance/{{bookmark_instance.id}}">XML model</a> 
+                            <a href="/bookmarks/api/rest/xml/bookmarkinstance/{{bookmark_instance.id}}">XML model REST</a> 
+                            <a href="/bookmarks/api/rest/json/bookmarkinstance/{{bookmark_instance.id}}">JSON model REST</a> 
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

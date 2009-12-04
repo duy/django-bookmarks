@@ -142,29 +142,34 @@ def edit(request, bookmark_instance_id):
     }, context_instance=RequestContext(request))        
 
 
-#@login_required
-#def bookmark_feed(request, feedtype,
-#                 group_slug=None, bridge=None,
-#                 bookmark_qs=ALL_BOOKMARKS,
-#                 extra_context=None,
-#                 is_member=None,
-#                 is_private=None,
-#                 *args, **kw):
+from django.conf import settings
+ITEMS_PER_FEED = getattr(settings, 'PINAX_ITEMS_PER_FEED', 20)
 
-#    feeds = {'rss' : RssBookmarkFeed,
-#             'atom' : AtomBookmarkFeed}
-#    BookmarkFeed = feeds.get(feedtype, RssBookmarkFeed)
+ALL_BOOKMARKS = Bookmark.objects.order_by("-added")[:ITEMS_PER_FEED]
+from django.http import HttpResponse
+from django.contrib.syndication.feeds import FeedDoesNotExist
 
-#    try:
-#        feedgen = BookmarkFeed(request,
-#                              group_slug, bridge,
-#                              bookmark_qs, changes_qs,
-#                              extra_context,
-#                              *args, **kw).get_feed()
-#    except FeedDoesNotExist:
-#        raise Http404
+@login_required
+def bookmark_feed(request, feedtype,
+                 id_slug=None,):
+                 
+    from bookmarks.feeds import BookmarkFeed, RSS1BookmarkFeed, AtomBookmarkFeed, RDFBookmarkFeed
 
-#    response = HttpResponse(mimetype=feedgen.mime_type)
-#    feedgen.write(response, 'utf-8')
-#    return response
+    feeds_dict = {
+        'rss':  BookmarkFeed,
+        'rss1': RSS1BookmarkFeed,
+        'atom': AtomBookmarkFeed,
+        'rdf': RDFBookmarkFeed,
+    }
+    BookmarkFeed = feeds_dict.get(feedtype, BookmarkFeed)
+
+    try:
+        feedgen = BookmarkFeed(request,
+                              id_slug,).get_feed()
+    except FeedDoesNotExist:
+        raise Http404
+
+    response = HttpResponse(mimetype=feedgen.mime_type)
+    feedgen.write(response, 'utf-8')
+    return response
 
