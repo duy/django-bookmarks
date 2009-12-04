@@ -12,3 +12,6 @@ build
 *~
 *.egg
 django_bookmarks.egg-info/*
+build/*
+dist/*
+temp/*
