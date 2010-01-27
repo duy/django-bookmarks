@@ -1,4 +1,5 @@
 from distutils.core import setup
+from setuptools import find_packages
 
 setup(
     name='django-bookmarks',
@@ -10,7 +11,25 @@ setup(
     packages=[
         'bookmarks',
     ],
-    package_dir={'bookmarks': 'bookmarks'},
+#    package_dir={'bookmarks': 'bookmarks'},
+#
+#    package_data = {
+#        'bookmarks': [
+#            'templates/bookmarks/*.html'
+#            'templates/feeds/*.html'
+#        ],
+#    },
+
+#    packages=find_packages(),
+#    package_data = {
+#        'bookmarks': [
+#            'templates/bookmarks/*.html',
+#            'templates/feeds/*.html'
+#        ],
+#    },
+#    include_package_data=True,
+#    zip_safe=False,
+
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
@@ -19,5 +38,6 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Framework :: Django',
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ]
 )

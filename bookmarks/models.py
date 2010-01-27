@@ -89,7 +89,6 @@ class BookmarkInstance(models.Model):
             # when editing, change bookmark description  property
             bookmark = self.bookmark
             bookmark.description = self.description
-            print bookmark.description
             bookmark.save()
         else:
             # new bookmark/bookmark instance so add the new bookmark

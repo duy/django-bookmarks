@@ -1,2 +1,5 @@
 include AUTHORS
 include LICENSE
+recursive-include docs *
+recursive-include bookmarks/templates/bookmarks *.html
+recursive-include bookmarks/templates/feeds *.html

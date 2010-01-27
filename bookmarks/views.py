@@ -173,3 +173,11 @@ def bookmark_feed(request, feedtype,
     feedgen.write(response, 'utf-8')
     return response
 
+@login_required
+def your_public_bookmarks(request):
+    private_tags = ['private']
+    bookmark_instances = BookmarkInstance.objects.exclude(tags__in=private_tags).filter(user=request.user).order_by("-saved")
+    return render_to_response("bookmarks/your_bookmarks.html", {
+        "bookmark_instances": bookmark_instances,
+    }, context_instance=RequestContext(request))
+
